@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酒店房间管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .sidebar h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .filters {
+            margin-bottom: 30px;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-group h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .filter-options input {
+            margin-right: 10px;
+        }
+        
+        .stats {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .stat-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            padding: 10px 15px;
+            border-radius: 50px;
+            width: 300px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-left: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .room-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .room-image {
+            height: 180px;
+            background: linear-gradient(45deg, #3498db, #2c3e50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .room-info {
+            padding: 20px;
+        }
+        
+        .room-type {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .room-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .room-features {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+        
+        .room-features span {
+            display: flex;
+            align-items: center;
+        }
+        
+        .room-features i {
+            margin-right: 5px;
+        }
+        
+        .room-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .status-available {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+        
+        .status-booked {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+        }
+        
+        .status-occupied {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+        }
+        
+        .status-cleaning {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--secondary);
+        }
+        
+        .room-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .room-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-hotel"></i>
+                    <span>酒店房间管理系统</span>
+                </div>
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=管理员&background=0D8ABC&color=fff" alt="用户头像">
+                    <span>管理员</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <aside class="sidebar">
+                <h2>筛选条件</h2>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <h3>房间状态</h3>
+                        <div class="filter-options">
+                            <label>
+                                <input type="checkbox" checked> 空闲
+                            </label>
+                            <label>
+                                <input type="checkbox" checked> 已预订
+                            </label>
+                            <label>
+                                <input type="checkbox" checked> 已入住
+                            </label>
+                            <label>
+                                <input type="checkbox" checked> 清洁中
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h3>房间类型</h3>
+                        <div class="filter-options">
+                            <label>
+                                <input type="checkbox" checked> 单人间
+                            </label>
+                            <label>
+                                <input type="checkbox" checked> 双人间
+                            </label>
+                            <label>
+                                <input type="checkbox" checked> 套房
+                            </label>
+                            <label>
+                                <input type="checkbox" checked> 豪华套房
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h3>价格范围</h3>
+                        <div class="filter-options">
+                            <label>
+                                <input type="radio" name="price" checked> 全部
+                            </label>
+                            <label>
+                                <input type="radio" name="price"> ￥0 - ￥300
+                            </label>
+                            <label>
+                                <input type="radio" name="price"> ￥300 - ￥600
+                            </label>
+                            <label>
+                                <input type="radio" name="price"> ￥600+
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <h2>统计信息</h2>
+                    <div class="stat-item">
+                        <span>总房间数</span>
+                        <span>48</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>空闲房间</span>
+                        <span>22</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>已入住</span>
+                        <span>18</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>今日入住率</span>
+                        <span>68%</span>
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="main-content">
+                <div class="action-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="搜索房间号或类型...">
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 添加房间
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-calendar"></i> 预订管理
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="rooms-grid">
+                    <!-- 房间卡片 -->
+                    <div class="room-card">
+                        <div class="room-image">301</div>
+                        <div class="room-info">
+                            <div class="room-type">单人间</div>
+                            <div class="room-number">房间 301</div>
+                            <div class="room-features">
+                                <span><i class="fas fa-user"></i> 1人</span>
+                                <span><i class="fas fa-wifi"></i> WiFi</span>
+                            </div>
+                            <div class="room-status status-available">空闲</div>
+                            <div class="room-actions">
+                                <button style="background: #e74c3c; color: white;">预订</button>
+                                <button style="background: #7f8c8d; color: white;">详情</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image">302</div>
+                        <div class="room-info">
+                            <div class="room-type">双人间</div>
+                            <div class="room-number">房间 302</div>
+                            <div class="room-features">
+                                <span><i class="fas fa-users"></i> 2人</span>
+                                <span><i class="fas fa-wifi"></i> WiFi</span>
+                            </div>
+                            <div class="room-status status-occupied">已入住</div>
+                            <div class="room-actions">
+                                <button style="background: #3498db; color: white;">退房</button>
+                                <button style="background: #7f8c8d; color: white;">详情</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image">303</div>
+                        <div class="room-info">
+                            <div class="room-type">套房</div>
+                            <div class="room-number">房间 303</div>
+                            <div class="room-features">
+                                <span><i class="fas fa-users"></i> 3人</span>
+                                <span><i class="fas fa-wifi"></i> WiFi</span>
+                            </div>
+                            <div class="room-status status-booked">已预订</div>
+                            <div class="room-actions">
+                                <button style="background: #2ecc71; color: white;">入住</button>
+                                <button style="background: #7f8c8d; color: white;">详情</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image">304</div>
+                        <div class="room-info">
+                            <div class="room-type">豪华套房</div>
+                            <div class="room-number">房间 304</div>
+                            <div class="room-features">
+                                <span><i class="fas fa-users"></i> 4人</span>
+                                <span><i class="fas fa-wifi"></i> WiFi</span>
+                            </div>
+                            <div class="room-status status-cleaning">清洁中</div>
+                            <div class="room-actions">
+                                <button style="background: #7f8c8d; color: white;" disabled>等待清洁</button>
+                                <button style="background: #7f8c8d; color: white;">详情</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image">305</div>
+                        <div class="room-info">
+                            <div class="room-type">单人间</div>
+                            <div class="room-number">房间 305</div>
+                            <div class="room-features">
+                                <span><i class="fas fa-user"></i> 1人</span>
+                                <span><i class="fas fa-wifi"></i> WiFi</span>
+                            </div>
+                            <div class="room-status status-available">空闲</div>
+                            <div class="room-actions">
+                                <button style="background: #e74c3c; color: white;">预订</button>
+                                <button style="background: #7f8c8d; color: white;">详情</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image">306</div>
+                        <div class="room-info">
+                            <div class="room-type">双人间</div>
+                            <div class="room-number">房间 306</div>
+                            <div class="room-features">
+                                <span><i class="fas fa-users"></i> 2人</span>
+                                <span><i class="fas fa-wifi"></i> WiFi</span>
+                            </div>
+                            <div class="room-status status-available">空闲</div>
+                            <div class="room-actions">
+                                <button style="background: #e74c3c; color: white;">预订</button>
+                                <button style="background: #7f8c8d; color: white;">详情</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // 简单的交互功能示例
+        document.addEventListener('DOMContentLoaded', function() {
+            // 房间状态筛选
+            const statusFilters = document.querySelectorAll('.filter-options input[type="checkbox"]');
+            statusFilters.forEach(filter => {
+                filter.addEventListener('change', filterRooms);
+            });
+            
+            // 搜索功能
+            const searchInput = document.querySelector('.search-box input');
+            searchInput.addEventListener('input', filterRooms);
+            
+            function filterRooms() {
+                const rooms = document.querySelectorAll('.room-card');
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                rooms.forEach(room => {
+                    const roomNumber = room.querySelector('.room-number').textContent.toLowerCase();
+                    const roomType = room.querySelector('.room-type').textContent.toLowerCase();
+                    
+                    if (roomNumber.includes(searchTerm) || roomType.includes(searchTerm)) {
+                        room.style.display = 'block';
+                    } else {
+                        room.style.display = 'none';
+                    }
+                });
+            }
+            
+            // 预订按钮点击事件
+            const bookButtons = document.querySelectorAll('.room-actions button:first-child');
+            bookButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const roomCard = this.closest('.room-card');
+                    const roomNumber = roomCard.querySelector('.room-number').textContent;
+                    
+                    if (this.textContent === '预订') {
+                        if (confirm(`确定要预订 ${roomNumber} 吗？`)) {
+                            const statusElement = roomCard.querySelector('.room-status');
+                            statusElement.textContent = '已预订';
+                            statusElement.className = 'room-status status-booked';
+                            this.textContent = '入住';
+                            this.style.background = '#2ecc71';
+                        }
+                    } else if (this.textContent === '入住') {
+                        if (confirm(`确定要办理 ${roomNumber} 入住吗？`)) {
+                            const statusElement = roomCard.querySelector('.room-status');
+                            statusElement.textContent = '已入住';
+                            statusElement.className = 'room-status status-occupied';
+                            this.textContent = '退房';
+                            this.style.background = '#3498db';
+                        }
+                    } else if (this.textContent === '退房') {
+                        if (confirm(`确定要办理 ${roomNumber} 退房吗？`)) {
+                            const statusElement = roomCard.querySelector('.room-status');
+                            statusElement.textContent = '清洁中';
+                            statusElement.className = 'room-status status-cleaning';
+                            this.textContent = '等待清洁';
+                            this.style.background = '#7f8c8d';
+                            this.disabled = true;
+                            
+                            // 模拟清洁完成后房间变为空闲
+                            setTimeout(() => {
+                                statusElement.textContent = '空闲';
+                                statusElement.className = 'room-status status-available';
+                                this.textContent = '预订';
+                                this.style.background = '#e74c3c';
+                                this.disabled = false;
+                            }, 3000);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
