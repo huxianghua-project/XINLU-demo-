@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>酒店房间管理系统</title>
+    <title>心庐客栈酒店管理</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -233,13 +233,36 @@
         
         .room-image {
             height: 180px;
-            background: linear-gradient(45deg, #3498db, #2c3e50);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 22px;
             font-weight: bold;
+            position: relative;
+        }
+        
+        .room-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+            z-index: 1;
+        }
+        
+        .room-image-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .room-image-content i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            display: block;
         }
         
         .room-info {
@@ -366,16 +389,16 @@
                         <h3>房间状态</h3>
                         <div class="filter-options">
                             <label>
-                                <input type="checkbox" checked> 空闲
+                                <input type="checkbox" checked data-status="available"> 空闲
                             </label>
                             <label>
-                                <input type="checkbox" checked> 已预订
+                                <input type="checkbox" checked data-status="booked"> 已预订
                             </label>
                             <label>
-                                <input type="checkbox" checked> 已入住
+                                <input type="checkbox" checked data-status="occupied"> 已入住
                             </label>
                             <label>
-                                <input type="checkbox" checked> 清洁中
+                                <input type="checkbox" checked data-status="cleaning"> 清洁中
                             </label>
                         </div>
                     </div>
@@ -384,34 +407,40 @@
                         <h3>房间类型</h3>
                         <div class="filter-options">
                             <label>
-                                <input type="checkbox" checked> 单人间
+                                <input type="checkbox" checked data-type="小标"> 小标
                             </label>
                             <label>
-                                <input type="checkbox" checked> 双人间
+                                <input type="checkbox" checked data-type="单间"> 单间
                             </label>
                             <label>
-                                <input type="checkbox" checked> 套房
+                                <input type="checkbox" checked data-type="中标"> 中标
                             </label>
                             <label>
-                                <input type="checkbox" checked> 豪华套房
+                                <input type="checkbox" checked data-type="大标"> 大标
+                            </label>
+                            <label>
+                                <input type="checkbox" checked data-type="豪标"> 豪标
+                            </label>
+                            <label>
+                                <input type="checkbox" checked data-type="豪标大床"> 豪标大床
+                            </label>
+                            <label>
+                                <input type="checkbox" checked data-type="三人间"> 三人间
                             </label>
                         </div>
                     </div>
                     
                     <div class="filter-group">
-                        <h3>价格范围</h3>
+                        <h3>楼层</h3>
                         <div class="filter-options">
                             <label>
-                                <input type="radio" name="price" checked> 全部
+                                <input type="checkbox" checked data-floor="2"> 2楼
                             </label>
                             <label>
-                                <input type="radio" name="price"> ￥0 - ￥300
+                                <input type="checkbox" checked data-floor="3"> 3楼
                             </label>
                             <label>
-                                <input type="radio" name="price"> ￥300 - ￥600
-                            </label>
-                            <label>
-                                <input type="radio" name="price"> ￥600+
+                                <input type="checkbox" checked data-floor="4"> 4楼
                             </label>
                         </div>
                     </div>
@@ -421,19 +450,19 @@
                     <h2>统计信息</h2>
                     <div class="stat-item">
                         <span>总房间数</span>
-                        <span>48</span>
+                        <span id="total-rooms">18</span>
                     </div>
                     <div class="stat-item">
                         <span>空闲房间</span>
-                        <span>22</span>
+                        <span id="available-rooms">12</span>
                     </div>
                     <div class="stat-item">
                         <span>已入住</span>
-                        <span>18</span>
+                        <span id="occupied-rooms">3</span>
                     </div>
                     <div class="stat-item">
                         <span>今日入住率</span>
-                        <span>68%</span>
+                        <span id="occupancy-rate">17%</span>
                     </div>
                 </div>
             </aside>
@@ -442,7 +471,7 @@
                 <div class="action-bar">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="搜索房间号或类型...">
+                        <input type="text" id="search-input" placeholder="搜索房间号或类型...">
                     </div>
                     
                     <div class="actions">
@@ -455,188 +484,235 @@
                     </div>
                 </div>
                 
-                <div class="rooms-grid">
-                    <!-- 房间卡片 -->
-                    <div class="room-card">
-                        <div class="room-image">301</div>
-                        <div class="room-info">
-                            <div class="room-type">单人间</div>
-                            <div class="room-number">房间 301</div>
-                            <div class="room-features">
-                                <span><i class="fas fa-user"></i> 1人</span>
-                                <span><i class="fas fa-wifi"></i> WiFi</span>
-                            </div>
-                            <div class="room-status status-available">空闲</div>
-                            <div class="room-actions">
-                                <button style="background: #e74c3c; color: white;">预订</button>
-                                <button style="background: #7f8c8d; color: white;">详情</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="room-card">
-                        <div class="room-image">302</div>
-                        <div class="room-info">
-                            <div class="room-type">双人间</div>
-                            <div class="room-number">房间 302</div>
-                            <div class="room-features">
-                                <span><i class="fas fa-users"></i> 2人</span>
-                                <span><i class="fas fa-wifi"></i> WiFi</span>
-                            </div>
-                            <div class="room-status status-occupied">已入住</div>
-                            <div class="room-actions">
-                                <button style="background: #3498db; color: white;">退房</button>
-                                <button style="background: #7f8c8d; color: white;">详情</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="room-card">
-                        <div class="room-image">303</div>
-                        <div class="room-info">
-                            <div class="room-type">套房</div>
-                            <div class="room-number">房间 303</div>
-                            <div class="room-features">
-                                <span><i class="fas fa-users"></i> 3人</span>
-                                <span><i class="fas fa-wifi"></i> WiFi</span>
-                            </div>
-                            <div class="room-status status-booked">已预订</div>
-                            <div class="room-actions">
-                                <button style="background: #2ecc71; color: white;">入住</button>
-                                <button style="background: #7f8c8d; color: white;">详情</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="room-card">
-                        <div class="room-image">304</div>
-                        <div class="room-info">
-                            <div class="room-type">豪华套房</div>
-                            <div class="room-number">房间 304</div>
-                            <div class="room-features">
-                                <span><i class="fas fa-users"></i> 4人</span>
-                                <span><i class="fas fa-wifi"></i> WiFi</span>
-                            </div>
-                            <div class="room-status status-cleaning">清洁中</div>
-                            <div class="room-actions">
-                                <button style="background: #7f8c8d; color: white;" disabled>等待清洁</button>
-                                <button style="background: #7f8c8d; color: white;">详情</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="room-card">
-                        <div class="room-image">305</div>
-                        <div class="room-info">
-                            <div class="room-type">单人间</div>
-                            <div class="room-number">房间 305</div>
-                            <div class="room-features">
-                                <span><i class="fas fa-user"></i> 1人</span>
-                                <span><i class="fas fa-wifi"></i> WiFi</span>
-                            </div>
-                            <div class="room-status status-available">空闲</div>
-                            <div class="room-actions">
-                                <button style="background: #e74c3c; color: white;">预订</button>
-                                <button style="background: #7f8c8d; color: white;">详情</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="room-card">
-                        <div class="room-image">306</div>
-                        <div class="room-info">
-                            <div class="room-type">双人间</div>
-                            <div class="room-number">房间 306</div>
-                            <div class="room-features">
-                                <span><i class="fas fa-users"></i> 2人</span>
-                                <span><i class="fas fa-wifi"></i> WiFi</span>
-                            </div>
-                            <div class="room-status status-available">空闲</div>
-                            <div class="room-actions">
-                                <button style="background: #e74c3c; color: white;">预订</button>
-                                <button style="background: #7f8c8d; color: white;">详情</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="rooms-grid" id="rooms-container">
+                    <!-- 房间卡片将通过JavaScript动态生成 -->
                 </div>
             </main>
         </div>
     </div>
 
     <script>
-        // 简单的交互功能示例
-        document.addEventListener('DOMContentLoaded', function() {
-            // 房间状态筛选
-            const statusFilters = document.querySelectorAll('.filter-options input[type="checkbox"]');
-            statusFilters.forEach(filter => {
-                filter.addEventListener('change', filterRooms);
+        // 房间数据
+        const rooms = [
+            { number: '201', type: '小标', floor: 2, status: 'available', capacity: 1, price: 198, features: ['WiFi', '空调'] },
+            { number: '202', type: '单间', floor: 2, status: 'available', capacity: 1, price: 168, features: ['WiFi', '空调'] },
+            { number: '203', type: '中标', floor: 2, status: 'booked', capacity: 2, price: 258, features: ['WiFi', '空调', '电视'] },
+            { number: '205', type: '大标', floor: 2, status: 'available', capacity: 2, price: 298, features: ['WiFi', '空调', '电视'] },
+            { number: '206', type: '豪标', floor: 2, status: 'occupied', capacity: 2, price: 398, features: ['WiFi', '空调', '电视', '迷你吧'] },
+            { number: '208', type: '大标', floor: 2, status: 'cleaning', capacity: 2, price: 298, features: ['WiFi', '空调', '电视'] },
+            { number: '301', type: '小标', floor: 3, status: 'available', capacity: 1, price: 198, features: ['WiFi', '空调'] },
+            { number: '302', type: '单间', floor: 3, status: 'booked', capacity: 1, price: 168, features: ['WiFi', '空调'] },
+            { number: '303', type: '中标', floor: 3, status: 'available', capacity: 2, price: 258, features: ['WiFi', '空调', '电视'] },
+            { number: '305', type: '三人间', floor: 3, status: 'occupied', capacity: 3, price: 358, features: ['WiFi', '空调', '电视'] },
+            { number: '306', type: '豪标', floor: 3, status: 'available', capacity: 2, price: 398, features: ['WiFi', '空调', '电视', '迷你吧'] },
+            { number: '308', type: '大标', floor: 3, status: 'available', capacity: 2, price: 298, features: ['WiFi', '空调', '电视'] },
+            { number: '401', type: '小标', floor: 4, status: 'booked', capacity: 1, price: 198, features: ['WiFi', '空调'] },
+            { number: '402', type: '单间', floor: 4, status: 'available', capacity: 1, price: 168, features: ['WiFi', '空调'] },
+            { number: '403', type: '中标', floor: 4, status: 'occupied', capacity: 2, price: 258, features: ['WiFi', '空调', '电视'] },
+            { number: '405', type: '大标', floor: 4, status: 'available', capacity: 2, price: 298, features: ['WiFi', '空调', '电视'] },
+            { number: '406', type: '豪标大床', floor: 4, status: 'available', capacity: 2, price: 428, features: ['WiFi', '空调', '电视', '迷你吧', '大床'] },
+            { number: '408', type: '大标', floor: 4, status: 'cleaning', capacity: 2, price: 298, features: ['WiFi', '空调', '电视'] }
+        ];
+
+        // 房间状态映射
+        const statusMap = {
+            'available': { text: '空闲', class: 'status-available', buttonText: '预订', buttonColor: '#e74c3c' },
+            'booked': { text: '已预订', class: 'status-booked', buttonText: '入住', buttonColor: '#2ecc71' },
+            'occupied': { text: '已入住', class: 'status-occupied', buttonText: '退房', buttonColor: '#3498db' },
+            'cleaning': { text: '清洁中', class: 'status-cleaning', buttonText: '等待清洁', buttonColor: '#7f8c8d' }
+        };
+
+        // 房间类型图标映射
+        const typeIcons = {
+            '小标': 'fas fa-bed',
+            '单间': 'fas fa-user',
+            '中标': 'fas fa-bed',
+            '大标': 'fas fa-bed',
+            '豪标': 'fas fa-crown',
+            '豪标大床': 'fas fa-crown',
+            '三人间': 'fas fa-users'
+        };
+
+        // 房间类型颜色映射
+        const typeColors = {
+            '小标': '#3498db',
+            '单间': '#9b59b6',
+            '中标': '#2ecc71',
+            '大标': '#f39c12',
+            '豪标': '#e74c3c',
+            '豪标大床': '#e74c3c',
+            '三人间': '#1abc9c'
+        };
+
+        // 初始化函数
+        function init() {
+            renderRooms(rooms);
+            setupEventListeners();
+            updateStats();
+        }
+
+        // 渲染房间卡片
+        function renderRooms(roomsToRender) {
+            const container = document.getElementById('rooms-container');
+            container.innerHTML = '';
+            
+            roomsToRender.forEach(room => {
+                const statusInfo = statusMap[room.status];
+                const roomCard = document.createElement('div');
+                roomCard.className = 'room-card';
+                roomCard.setAttribute('data-status', room.status);
+                roomCard.setAttribute('data-type', room.type);
+                roomCard.setAttribute('data-floor', room.floor);
+                
+                roomCard.innerHTML = `
+                    <div class="room-image" style="background: linear-gradient(45deg, ${typeColors[room.type]}, #2c3e50);">
+                        <div class="room-image-content">
+                            <i class="${typeIcons[room.type]}"></i>
+                            ${room.number}
+                        </div>
+                    </div>
+                    <div class="room-info">
+                        <div class="room-type">${room.type} ￥${room.price}/晚</div>
+                        <div class="room-number">房间 ${room.number}</div>
+                        <div class="room-features">
+                            <span><i class="fas fa-user${room.capacity > 1 ? 's' : ''}"></i> ${room.capacity}人</span>
+                            <span><i class="fas fa-wifi"></i> WiFi</span>
+                        </div>
+                        <div class="room-status ${statusInfo.class}">${statusInfo.text}</div>
+                        <div class="room-actions">
+                            <button style="background: ${statusInfo.buttonColor}; color: white;" ${room.status === 'cleaning' ? 'disabled' : ''}>
+                                ${statusInfo.buttonText}
+                            </button>
+                            <button style="background: #7f8c8d; color: white;">详情</button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(roomCard);
             });
             
-            // 搜索功能
-            const searchInput = document.querySelector('.search-box input');
-            searchInput.addEventListener('input', filterRooms);
+            // 添加房间卡片事件监听
+            addRoomCardEventListeners();
+        }
+
+        // 添加房间卡片事件监听
+        function addRoomCardEventListeners() {
+            const roomCards = document.querySelectorAll('.room-card');
             
-            function filterRooms() {
-                const rooms = document.querySelectorAll('.room-card');
-                const searchTerm = searchInput.value.toLowerCase();
-                
-                rooms.forEach(room => {
-                    const roomNumber = room.querySelector('.room-number').textContent.toLowerCase();
-                    const roomType = room.querySelector('.room-type').textContent.toLowerCase();
-                    
-                    if (roomNumber.includes(searchTerm) || roomType.includes(searchTerm)) {
-                        room.style.display = 'block';
-                    } else {
-                        room.style.display = 'none';
-                    }
+            roomCards.forEach(card => {
+                const button = card.querySelector('.room-actions button:first-child');
+                button.addEventListener('click', function() {
+                    const roomNumber = card.querySelector('.room-number').textContent.replace('房间 ', '');
+                    handleRoomAction(roomNumber, this.textContent);
                 });
+            });
+        }
+
+        // 处理房间操作
+        function handleRoomAction(roomNumber, action) {
+            const room = rooms.find(r => r.number === roomNumber);
+            if (!room) return;
+            
+            let newStatus = room.status;
+            let confirmMessage = '';
+            
+            switch(action) {
+                case '预订':
+                    confirmMessage = `确定要预订房间 ${roomNumber} 吗？`;
+                    newStatus = 'booked';
+                    break;
+                case '入住':
+                    confirmMessage = `确定要办理房间 ${roomNumber} 入住吗？`;
+                    newStatus = 'occupied';
+                    break;
+                case '退房':
+                    confirmMessage = `确定要办理房间 ${roomNumber} 退房吗？`;
+                    newStatus = 'cleaning';
+                    break;
+                default:
+                    return;
             }
             
-            // 预订按钮点击事件
-            const bookButtons = document.querySelectorAll('.room-actions button:first-child');
-            bookButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const roomCard = this.closest('.room-card');
-                    const roomNumber = roomCard.querySelector('.room-number').textContent;
-                    
-                    if (this.textContent === '预订') {
-                        if (confirm(`确定要预订 ${roomNumber} 吗？`)) {
-                            const statusElement = roomCard.querySelector('.room-status');
-                            statusElement.textContent = '已预订';
-                            statusElement.className = 'room-status status-booked';
-                            this.textContent = '入住';
-                            this.style.background = '#2ecc71';
-                        }
-                    } else if (this.textContent === '入住') {
-                        if (confirm(`确定要办理 ${roomNumber} 入住吗？`)) {
-                            const statusElement = roomCard.querySelector('.room-status');
-                            statusElement.textContent = '已入住';
-                            statusElement.className = 'room-status status-occupied';
-                            this.textContent = '退房';
-                            this.style.background = '#3498db';
-                        }
-                    } else if (this.textContent === '退房') {
-                        if (confirm(`确定要办理 ${roomNumber} 退房吗？`)) {
-                            const statusElement = roomCard.querySelector('.room-status');
-                            statusElement.textContent = '清洁中';
-                            statusElement.className = 'room-status status-cleaning';
-                            this.textContent = '等待清洁';
-                            this.style.background = '#7f8c8d';
-                            this.disabled = true;
-                            
-                            // 模拟清洁完成后房间变为空闲
-                            setTimeout(() => {
-                                statusElement.textContent = '空闲';
-                                statusElement.className = 'room-status status-available';
-                                this.textContent = '预订';
-                                this.style.background = '#e74c3c';
-                                this.disabled = false;
-                            }, 3000);
-                        }
-                    }
-                });
+            if (confirm(confirmMessage)) {
+                room.status = newStatus;
+                renderRooms(rooms);
+                updateStats();
+                
+                // 如果是退房操作，3秒后自动变为空闲状态
+                if (action === '退房') {
+                    setTimeout(() => {
+                        room.status = 'available';
+                        renderRooms(rooms);
+                        updateStats();
+                    }, 3000);
+                }
+            }
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            const totalRooms = rooms.length;
+            const availableRooms = rooms.filter(r => r.status === 'available').length;
+            const occupiedRooms = rooms.filter(r => r.status === 'occupied').length;
+            const occupancyRate = Math.round((occupiedRooms / totalRooms) * 100);
+            
+            document.getElementById('total-rooms').textContent = totalRooms;
+            document.getElementById('available-rooms').textContent = availableRooms;
+            document.getElementById('occupied-rooms').textContent = occupiedRooms;
+            document.getElementById('occupancy-rate').textContent = `${occupancyRate}%`;
+        }
+
+        // 设置事件监听
+        function setupEventListeners() {
+            // 搜索功能
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterRooms);
+            
+            // 筛选功能
+            const filterCheckboxes = document.querySelectorAll('.filters input[type="checkbox"]');
+            filterCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', filterRooms);
             });
-        });
+        }
+
+        // 筛选房间
+        function filterRooms() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            // 获取选中的状态筛选
+            const selectedStatuses = Array.from(document.querySelectorAll('.filters input[data-status]:checked'))
+                .map(cb => cb.getAttribute('data-status'));
+            
+            // 获取选中的类型筛选
+            const selectedTypes = Array.from(document.querySelectorAll('.filters input[data-type]:checked'))
+                .map(cb => cb.getAttribute('data-type'));
+            
+            // 获取选中的楼层筛选
+            const selectedFloors = Array.from(document.querySelectorAll('.filters input[data-floor]:checked'))
+                .map(cb => cb.getAttribute('data-floor'));
+            
+            const filteredRooms = rooms.filter(room => {
+                // 搜索筛选
+                const matchesSearch = room.number.includes(searchTerm) || 
+                                    room.type.toLowerCase().includes(searchTerm);
+                
+                // 状态筛选
+                const matchesStatus = selectedStatuses.includes(room.status);
+                
+                // 类型筛选
+                const matchesType = selectedTypes.includes(room.type);
+                
+                // 楼层筛选
+                const matchesFloor = selectedFloors.includes(room.floor.toString());
+                
+                return matchesSearch && matchesStatus && matchesType && matchesFloor;
+            });
+            
+            renderRooms(filteredRooms);
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
